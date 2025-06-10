@@ -10,6 +10,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,6 +100,19 @@ public class ResumeController {
         } catch (Exception e) {
             log.error("이력서 삭제 실패: {}", e.getMessage(), e);
             return ResponseEntity.badRequest().body("삭제 실패: " + e.getMessage());
+        }
+    }
+
+    // PDF 파일 업로드 및 텍스트 추출 후 저장
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadResume(@RequestParam("file") MultipartFile file,
+                                          @RequestParam("userId") Long userId) {
+        try {
+            Resume savedResume = resumeService.uploadAndParsePdf(file, userId);
+            return ResponseEntity.ok(savedResume);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("파일 처리 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 }

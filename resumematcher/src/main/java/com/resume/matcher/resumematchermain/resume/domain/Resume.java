@@ -3,6 +3,9 @@ package com.resume.matcher.resumematchermain.resume.domain;
 import com.resume.matcher.resumematchermain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
+import java.util.ArrayList;
+
 
 import java.time.LocalDateTime;
 
@@ -48,4 +51,7 @@ public class Resume {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    @ElementCollection
+    private List<String> keywords = new ArrayList<>();
 }
